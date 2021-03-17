@@ -1,15 +1,18 @@
 # DineLine
 **Main**
+
 [![Build Status](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class.svg?branch=main)](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class.svg?branch=main)
 [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/spring2021-cs-gy-9223-class/badge.svg?branch=main)](https://coveralls.io/github/gcivil-nyu-org/spring2021-cs-gy-9223-class?branch=main)
 
 
 
 **Team-1**
+
 [![Build Status](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class.svg?branch=team-1)](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class.svg?branch=team-1)
 [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/spring2021-cs-gy-9223-class/badge.svg?branch=team-1)](https://coveralls.io/github/gcivil-nyu-org/spring2021-cs-gy-9223-class?branch=team-1)
 
 **Team-2**
+
 [![Build Status](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class.svg?branch=team-2)](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class.svg?branch=team-2)
 [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/spring2021-cs-gy-9223-class/badge.svg?branch=team-2)](https://coveralls.io/github/gcivil-nyu-org/spring2021-cs-gy-9223-class?branch=team-2)
 
