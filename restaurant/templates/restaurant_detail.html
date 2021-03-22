@@ -811,6 +811,7 @@ const DEFAULT_AVATAR = 'https://s3-media3.fl.yelpcdn.com/photo/O8CmQtEeOUvMTFk0i
 const isNull = el => el === 'null' || el === null || el === undefined;
 const restaurantId = '{{ restaurant_id }}' || '';
 const userId = Number('{{ user_id | safe }}');
+{% comment %} const comments = '{{  }}' || "Hello"; {% endcomment %}
 
 /**
  * Rating box view
@@ -1131,6 +1132,15 @@ internalReviews.forEach(review => {
   if (userId === review.user) {
     ratingReview.setAttribute('editable', 'editable');
   }
+  // add replies here
+  review.comments.forEach(el => {
+    ratingReview.renderReplies({
+      profile: el.profile || DEFAULT_AVATAR,
+      text: el.text,
+      author: el.author,
+      commentId: el.commentId,
+    })
+  });
   reviewWrapper.appendChild(ratingReview);
 });
 
