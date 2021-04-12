@@ -130,10 +130,10 @@ export default ({ review, restaurantId, userId, isInternal }) => {
         <div className="yelp__root mt-2" onMouseLeave={() => setShowDropdown(false)}>
             <div className="yelp__body d-block d-sm-flex">
                 <div className="yelp__pic_date" style={{ opacity: data.hidden ? 0.5 : 1 }}>
-                    <div>
+                    <div className="text-center">
                         <img src={data.profilePic || DEFAULT_AVATAR} className="yelp__pic p-2"/>
                     </div>
-                    <div className="yelp__date text-muted">
+                    <div className="yelp__date text-muted text-sm">
                         {data.time}
                     </div>
                 </div>

@@ -15,7 +15,6 @@ export default ({ text, userId, author, restaurantId, reviewId, profile, comment
     });
   };
   const onReplyClick = e => {
-    console.log(textInput.current, textInput.current.value);
     fetch(`/restaurant/profile/${restaurantId}/comment_edit/${reviewId}?text=${textInput.current.value}`).then(res => {
       if (res.ok) location.reload();
     })
@@ -57,7 +56,7 @@ export default ({ text, userId, author, restaurantId, reviewId, profile, comment
               <FontAwesomeIcon icon={faBackspace} />
             </i>
           ) : (
-            <i className="text-secondary btn btn-sm ml-1" onClick={onReport}>
+            <i className="text-secondary btn btn-sm ml-1" onClick={e => { onReport(e); __data__.reportAbuse.type = REPORT_TYPE.COMEMNT; }}>
               <FontAwesomeIcon icon={faFlag} />
             </i>
           )
