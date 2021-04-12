@@ -830,26 +830,10 @@
           <div id="root"></div>
         </div> 
       </div>
+      
       <div class="col-lg-4">
         <div class="pl-xl-4">
-          <!-- Opening Hours      -->
-          <div class="card border-0 shadow mb-5">
-            <div class="card-header bg-gray-100 py-4 border-0">
-              <div class="media align-items-center">
-                <div class="media-body">
-<!--                  <p class="subtitle text-sm text-primary">Overnight Status : <span id="res_overnight_status"></span></p>-->
-                  <h4 class="mb-0">Opening Hours </h4> </div>
-                <svg class="svg-icon svg-icon svg-icon-light w-3rem h-3rem ml-3 text-muted">
-                  <use xlink:href="#wall-clock-1"> </use>
-                </svg>
-              </div>
-            </div>
-            <div class="card-body">
-              <table id="res_open_hours" class="table text-sm mb-0">
-
-              </table>
-            </div>
-          </div>
+        <div id="sidebar"></div>
           <!-- Contact-->
           <div class="card border-0 shadow mb-5">
             <div class="card-header bg-gray-100 py-4 border-0">
@@ -1053,32 +1037,6 @@ function timeChangeFunc(x) {
   var mins = x.slice(2,4);
   hrs = hrs%12 || 12;
   return(hrs + ":" + mins + " " + a);
-}
-
-var days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-var day_time = [0, 0, 0, 0, 0, 0, 0];
-for (i = 0; i < yelp_info.hours[0].open.length; i++) {
-    var curr = yelp_info.hours[0].open[i].day;
-    day_time[curr]++;
-}
-var prev_day = -1;
-for (i = 0; i < yelp_info.hours[0].open.length; i++) {
-    var opening_hours = document.getElementById("res_open_hours");
-    var row = document.createElement("tr");
-    opening_hours.appendChild(row);
-    var curr_day = yelp_info.hours[0].open[i].day;
-    if (curr_day != prev_day) {
-        var thh = document.createElement("th");
-        thh.className = "pl-0";
-        thh.innerHTML = days[curr_day];
-        thh.rowSpan = day_time[curr_day];
-        row.appendChild(thh);
-    }
-    prev_day = curr_day;
-    var tdd = document.createElement("td");
-    tdd.className = "pr-0 text-right";
-    tdd.innerHTML = timeChangeFunc(yelp_info.hours[0].open[i].start) + "-" + timeChangeFunc(yelp_info.hours[0].open[i].end);
-    row.appendChild(tdd);
 }
 
 for (i = 0; i < yelp_info.photos.length; i++) {
