@@ -8,8 +8,6 @@ render(<App
             internalReviews={internalReviews} 
             restaurantId={restaurantId} 
             userId={userId} 
-        />, 
-            
+        />,      
         document.getElementById('root')
-        
         );
