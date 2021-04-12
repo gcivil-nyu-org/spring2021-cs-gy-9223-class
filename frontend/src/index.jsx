@@ -9,7 +9,5 @@ render(<App
             restaurantId={restaurantId} 
             userId={userId} 
         />, 
-            
         document.getElementById('root')
-        
         );
