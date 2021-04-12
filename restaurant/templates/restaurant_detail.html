@@ -85,12 +85,14 @@
                 </h5>
                 {% if messages %}
                 {% for message in messages %}
-                {% if message %}
+                {% if message.extra_tags%}
                 <span class="badge badge-primary-light"><h6>Thanks for your feedback!</h6></span>
+                {% else%}
+                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">Submit Feedback?</button>
                 {% endif %}
                 {% endfor %}
                 {% elif user.is_authenticated %}
-                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#exampleModal">Submit Feedback?</button>
+                <button type="button" class="btn btn-link" data-toggle="modal" data-target="#feedbackModal">Submit Feedback?</button>
                 {% endif %}
               </div>
 
@@ -471,7 +473,84 @@
           </div>
         </div>
 
-
+        <!-- Modal -->
+        <div class="modal fade" id="feedbackModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Tell us about your experience!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form class="form-validate" method="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                  <h2>For this restaurant:</h2>
+                  <input type="text" id="restaurant_business_id" name="restaurant_business_id" value="" hidden >
+                    <input type="text" id="user_id" name="user_id" value="{{user.id}}" hidden>
+                    <input type="text" id="saved_on" name="saved_on"   hidden>
+                  <br>
+                  <p>Did you receive a temperature check?</p>
+                  <div class="form-group">
+                    <input id="temp_check_true" type="radio" name="temperature_required" value="true" required/>
+                    <label for="temp_check_true" title="text">Yes</label>
+                    <input id="temp_check_false" type="radio" name="temperature_required" value="false" required/>
+                    <label for="temp_check_false" title="text">No</label>
+                  </div>
+                  <br>
+                  <p>Were you or a member of your party required to provide contact tracing information?</p>
+                  <div class="form-group">
+                    <input id="contact_true" type="radio" name="contact_info_required" value="true" required/>
+                    <label for="contact_true" title="text">Yes</label>
+                    <input id="contact_false" type="radio" name="contact_info_required" value="false" required/>
+                    <label for="contact_false" title="text">No</label>
+                  </div>
+                  <br>
+                  <p>Were restaurant staff wearing masks at all times?</p>
+                  <div class="form-group">
+                    <input id="employee_mask_true" type="radio" name="employee_mask" value="true" required/>
+                    <label for="employee_mask_true" title="text">Yes</label>
+                    <input id="employee_mask_false" type="radio" name="employee_mask" value="false" required/>
+                    <label for="employee_mask_false" title="text">No</label>
+                  </div>
+                  <br>
+                  <p>Was in-door capacity under 25%?</p>
+                  <div class="form-group">
+                    <input id="capacity_true" type="radio" name="capacity_compliant" value="true" required/>
+                    <label for="capacity_true" title="text">Yes</label>
+                    <input id="capacity_false" type="radio" name="capacity_compliant" value="false" required/>
+                    <label for="capacity_false" title="text">No</label>
+                  </div>
+                  <br>
+                  <p>Were you seated at least 6 feet from the nearest party?</p>
+                  <div class="form-group">
+                    <input id="distance_compliant_true" type="radio" name="distance_compliant" value="true" required/>
+                    <label for="distance_compliant_true" title="text">Yes</label>
+                    <input id="distance_compliant_false" type="radio" name="distance_compliant" value="false" required/>
+                    <label for="distance_compliant_false" title="text">No</label>
+                  </div>
+                  <br>
+                  <p>How would you rate the safety level for this restaurant?</p>
+                  <div class="form-group" style="width: 200px;">
+                    <select class="selectpicker form-control" name="safety_level" data-style="btn-selectpicker" title="">
+                      <option value="5">&#9733;&#9733;&#9733;&#9733;&#9733; (5/5)</option>
+                      <option value="4">&#9733;&#9733;&#9733;&#9733;&#9734; (4/5)</option>
+                      <option value="3">&#9733;&#9733;&#9733;&#9734;&#9734; (3/5)</option>
+                      <option value="2">&#9733;&#9733;&#9734;&#9734;&#9734; (2/5)</option>
+                      <option value="1">&#9733;&#9734;&#9734;&#9734;&#9734; (1/5)</option>
+                    </select>
+                  </div>
+                  <br>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button class="btn btn-primary" type="submit" name="questionnaire_form" data-toggle="tooltip" data-placement="top" data-original-title="All fields required. Incomplete form will not be saved">Submit</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
         
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog modal-lg" role="document">
