@@ -99,7 +99,6 @@ def get_restaurant_profile(request, restaurant_id):
             # if form.is_valid():
             form.save()
             messages.success(request, "Thank you for your review!")
-            
         return HttpResponseRedirect(url)
 
     if request.method == "POST" and "employee_mask" in request.POST:
@@ -465,7 +464,6 @@ def delete_favorite_restaurant(request, business_id):
         return HttpResponse("Deleted")
 
 
-@login_required
 def like_review(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
