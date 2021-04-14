@@ -66,6 +66,11 @@ def get_restaurant_profile(request, restaurant_id):
         url = reverse("restaurant:profile", args=[restaurant_id])
         date_from = datetime.now() - timedelta(days=1)
 
+        # If user has not logged in
+        if not request.user.is_authenticated:
+            messages.error(request, "Please login before making review")
+            return HttpResponseRedirect(url)
+
         # 24 hour limit for reviews on the same restaurant, 1 review at most
         lastday_reviews_num_rest = Review.objects.filter(
             user=request.user, restaurant_id=restaurant_id, time__gte=date_from
@@ -83,13 +88,11 @@ def get_restaurant_profile(request, restaurant_id):
             )
         elif lastday_reviews_num_user >= 2:
             messages.error(request, "Sorry, you've made 2 reviews within last 24 hours")
-        elif request.user.is_authenticated:
+        else:
             form = UserQuestionaireForm(request.POST, request.FILES, restaurant_id)
             # if form.is_valid():
             form.save()
             messages.success(request, "Thank you for your review!")
-        else:
-            messages.error(request, "Please login before making review")
 
         return HttpResponseRedirect(url)
 
