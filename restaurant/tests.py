@@ -642,7 +642,7 @@ class UserQuestionnaireFormTests(BaseTest):
         form = QuestionnaireForm(self.form)
         response = self.c.post("/restaurant/profile/1/", self.form)
         self.assertTrue(form.is_valid())
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
 
 class SearchFilterFormTests(BaseTest):
@@ -1405,7 +1405,7 @@ class ReviewTests(BaseTest):
             username="user1",
             email="test1@gmail.com",
         )
-        self.user1.set_password("test1234Report")
+        self.user1.set_password("test1234Reviews")
         self.user1.save()
 
         self.user2 = get_user_model().objects.create(
@@ -1434,6 +1434,49 @@ class ReviewTests(BaseTest):
             5,
         )
         self.temp_review.save()
+
+    def test_add_review(self):
+        self.c.login(username="user1", password="test1234Reviews")
+
+        restaurant = create_restaurant(
+            restaurant_name="Gary Danko",
+            business_address="800 N Point St",
+            yelp_detail=None,
+            postcode="94109",
+            business_id="WavvLdfdP6g8aZTtbBQHTx",
+        )
+        create_review(self.user1, restaurant, "test adding review", 5)
+
+        # test adding review for the same restaurant within 24 hours
+        url1 = "/restaurant/profile/" + str(self.temp_restaurant.id) + "/"
+        form = {
+            "user_id": str(self.user1.id),
+            "rating": 5,
+            "rating_safety": 5,
+            "rating_entry": 5,
+            "rating_door": 5,
+            "rating_table": 5,
+            "rating_bathroom": 5,
+            "rating_path": 5,
+            "content": "test adding review",
+        }
+
+        response1 = self.c.post(url1, form)
+        review_count_1 = Review.objects.filter(
+            user=self.user1, restaurant=self.temp_restaurant
+        ).count()
+        self.assertEqual(response1.status_code, 302)
+        self.assertEqual(review_count_1, 1)
+
+        # test adding review for 2 or more different restaurants within 24 hours
+        url2 = "/restaurant/profile/" + str(restaurant.id) + "/"
+
+        response2 = self.c.post(url2, form)
+        review_count_2 = Review.objects.filter(user=self.user1).count()
+        self.assertEqual(response2.status_code, 302)
+        self.assertEqual(review_count_2, 2)
+
+        self.c.logout()
 
     def test_like_review(self):
         self.c.login(username="user2", password="test4321Report")
@@ -1484,12 +1527,12 @@ class CreateCommentTest(BaseTest):
     @mock.patch("user.models.Review.objects")
     @mock.patch("user.models.Comment.__init__", mock.Mock(return_value=None))
     @mock.patch("user.models.Comment.save", mock.Mock(return_value=None))
-    def test_edit_comment(self, queryset):
+    def test_edit_comment_guest(self, queryset):
         queryset.get.return_value = None
         response = self.c.get(
             "/restaurant/profile/restaurant_id/comment_edit/review_id"
         )
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 403)
 
 
 class DeleteCommentTest(BaseTest):
@@ -1546,6 +1589,19 @@ class CommentTest(TestCase):
         )
         response = self.c.get(delete_url)
         self.assertEqual(response.status_code, 302)
+
+    def test_add_comment_loggedin(self):
+        self.c.login(username="testuser", password="test1234Comment")
+        form = {
+            "text": "test adding comment",
+        }
+        response = self.c.get(
+            "/restaurant/profile/restaurant_id/comment_edit/"
+            + str(self.temp_review.id),
+            form,
+        )
+        self.assertEqual(response.status_code, 302)
+        self.c.logout()
 
 
 class ReportTests(TestCase):

@@ -1,18 +1,23 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404
-from django.http import JsonResponse, HttpResponseRedirect, HttpResponseBadRequest
+from django.http import (
+    JsonResponse,
+    HttpResponseRedirect,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+)
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.paginator import Paginator
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 
 from .models import Restaurant, FAQ
 
 from .forms import (
-    # QuestionnaireForm,
+    QuestionnaireForm,
     SearchFilterForm,
 )
 from user.forms import (
@@ -61,14 +66,50 @@ logger = logging.getLogger(__name__)
 
 
 def get_restaurant_profile(request, restaurant_id):
-
+    # When user add a review
     if request.method == "POST" and "content" in request.POST:
-        form = UserQuestionaireForm(request.POST, request.FILES, restaurant_id)
         url = reverse("restaurant:profile", args=[restaurant_id])
-        # if form.is_valid():
-        form.save()
-        messages.success(request, "Thank you for your review!")
+        date_from = datetime.now() - timedelta(days=1)
+
+        # If user has not logged in
+        if not request.user.is_authenticated:
+            messages.error(request, "Please login before making review")
+            return HttpResponseRedirect(url)
+
+        # 24 hour limit for reviews on the same restaurant, 1 review at most
+        lastday_reviews_num_rest = Review.objects.filter(
+            user=request.user, restaurant_id=restaurant_id, time__gte=date_from
+        ).count()
+
+        # 24 hour limit for the user, 2 reviews at most
+        lastday_reviews_num_user = Review.objects.filter(
+            user=request.user, time__gte=date_from
+        ).count()
+
+        if lastday_reviews_num_rest > 0:
+            messages.error(
+                request,
+                "Sorry, you've made a review for this restaurant within last 24 hours.",
+            )
+        elif lastday_reviews_num_user >= 2:
+            messages.error(request, "Sorry, you've made 2 reviews within last 24 hours")
+        else:
+            form = UserQuestionaireForm(request.POST, request.FILES, restaurant_id)
+            # if form.is_valid():
+            form.save()
+            messages.success(request, "Thank you for your review!")
+
         return HttpResponseRedirect(url)
+
+    if request.method == "POST" and "employee_mask" in request.POST:
+        form = QuestionnaireForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(
+                request, "Thank you for your feedback!", extra_tags="feedback"
+            )
+            url = reverse("restaurant:profile", args=[restaurant_id])
+            return HttpResponseRedirect(url)
 
     try:
         csv_file = get_csv_from_github()
@@ -118,9 +159,7 @@ def get_restaurant_profile(request, restaurant_id):
                 "hidden",
             )
         )
-        print("Internal review lists: \n")
-        for r in internal_reviews:
-            print(r)
+
         for idx in range(len(internal_reviews)):
             comments = Comment.objects.filter(review_id=internal_reviews[idx]["id"])
             # get photo afterwards
@@ -236,8 +275,6 @@ def get_restaurant_profile(request, restaurant_id):
                 # Recommended Restuarants
                 "recommended_restaurants": recommended_restaurants,
                 "media_url_prefix": settings.MEDIA_URL,
-                # Recommended Restuarants
-                "recommended_restaurants": recommended_restaurants,
                 # Restaurant Q&As
                 "restaurant_question_list": restaurant_question_list,
                 "total_question_count": total_question_count,
@@ -270,8 +307,6 @@ def get_restaurant_profile(request, restaurant_id):
                 # Recommended Restuarants
                 "recommended_restaurants": recommended_restaurants,
                 "media_url_prefix": settings.MEDIA_URL,
-                # Recommended Restuarants
-                "recommended_restaurants": recommended_restaurants,
                 # Restaurant Q&As
                 "restaurant_question_list": restaurant_question_list,
                 "total_question_count": total_question_count,
@@ -288,41 +323,44 @@ def get_restaurant_profile(request, restaurant_id):
 def edit_review(request, restaurant_id, review_id, action, source):
     if action == "delete":
         Review.objects.filter(id=review_id).delete()
+        messages.success(request, "Your review is removed!")
     if action == "put":
         review = Review.objects.get(id=review_id)
         review.rating = request.POST.get("rating")
         review.content = request.POST.get("content")
+        review.hidden = False
         review.save()
-        messages.success(request, "success")
+        messages.success(request, "Your review is saved!")
     if source == "restaurant":
         return HttpResponseRedirect(reverse("restaurant:profile", args=[restaurant_id]))
     if source == "user":
         return HttpResponseRedirect(reverse("user:user_reviews"))
 
 
-def edit_user_review(request, restaurant_id, comment_id, action):
-    if action == "delete":
-        Review.objects.filter(id=comment_id).delete()
-    if action == "put":
-        review = Review.objects.get(id=comment_id)
-        review.rating = request.POST.get("rating")
-        review.content = request.POST.get("content")
-        review.save()
-        messages.success(request, "success")
-    return HttpResponseRedirect(reverse("user:user_reviews"))
-
-
 def edit_comment(request, restaurant_id, review_id):
-    review = Review.objects.get(pk=review_id)
-    comment = Comment(user=request.user, review=review)
-    comment.text = request.GET.get("text")
-    comment.time = datetime.now()
-    comment.save()
+    if request.user.is_authenticated:
+        review = Review.objects.get(pk=review_id)
+        comment = Comment(user=request.user, review=review)
+        comment.text = request.GET.get("text")
+        comment.time = datetime.now()
+        comment.save()
+        messages.success(request, "Your comment is saved!")
+    else:
+        messages.error(request, "Please first login before replying any review")
+        return HttpResponseForbidden()
     return HttpResponseRedirect(reverse("restaurant:profile", args=[restaurant_id]))
 
 
 def delete_comment(request, restaurant_id, comment_id):
-    Comment.objects.get(pk=comment_id).delete()
+    if request.user.is_authenticated:
+        comment = Comment.objects.get(pk=comment_id)
+        if request.user.id == comment.user.id:
+            comment.delete()
+            messages.success(request, "Your comment is removed!")
+        else:
+            messages.error(request, "You are not able to delete other users' comments!")
+    else:
+        messages.error(request, "Please first login before deleting any comment")
     return HttpResponseRedirect(reverse("restaurant:profile", args=[restaurant_id]))
 
 
@@ -427,6 +465,8 @@ def delete_favorite_restaurant(request, business_id):
 
 @login_required
 def like_review(request):
+    if not request.user.is_authenticated:
+        return HttpResponseForbidden()
     if request.method == "POST":
         user = request.user
         review = get_object_or_404(Review, id=request.POST.get("review_id"))
@@ -506,7 +546,8 @@ def get_faqs_list(request):
 
 # Report Reviews & Comments
 def report_review(request, restaurant_id, review_id):
-    if request.method == "POST":
+    url = reverse("restaurant:profile", args=[restaurant_id])
+    if request.method == "POST" and request.user.is_authenticated:
         user = request.user
         form = Report_Review_Form(request.POST, review_id, user)
         form.save()
@@ -521,12 +562,14 @@ def report_review(request, restaurant_id, review_id):
         send_moderate_notification_email(
             request, target_user, restaurant, "review", "report"
         )
-        url = reverse("restaurant:profile", args=[restaurant_id])
-        return HttpResponseRedirect(url)
+    else:
+        messages.error(request, "Please first login before reporting any review")
+    return HttpResponseRedirect(url)
 
 
 def report_comment(request, restaurant_id, comment_id):
-    if request.method == "POST":
+    url = reverse("restaurant:profile", args=[restaurant_id])
+    if request.method == "POST" and request.user.is_authenticated:
         user = request.user
         form = Report_Comment_Form(request.POST, comment_id, user)
         form.save()
@@ -541,8 +584,10 @@ def report_comment(request, restaurant_id, comment_id):
         send_moderate_notification_email(
             request, target_user, restaurant, "comment", "report"
         )
-        url = reverse("restaurant:profile", args=[restaurant_id])
-        return HttpResponseRedirect(url)
+    else:
+        messages.error(request, "Please first login before reporting any comment")
+
+    return HttpResponseRedirect(url)
 
 
 # Ignore、hide and delete inappropriate Comments & Reviews
@@ -564,6 +609,7 @@ def hide_review(request, review_id):
                 request,
                 "Reported review is hidden and all the related report tickets are closed!",
             )
+
             send_moderate_notification_email(
                 request, target_user, restaurant, "review", "hide"
             )
@@ -591,14 +637,15 @@ def hide_comment(request, comment_id):
 
             target_user = comment.user
             restaurant = comment.review.restaurant
-
             messages.success(
                 request,
                 "Reported comment is hidden and all the related report tickets are closed!",
             )
+
             send_moderate_notification_email(
                 request, target_user, restaurant, "comment", "hide"
             )
+
         else:
             messages.error(
                 request, "Comment ID could not be found: {}".format(comment_id)
@@ -653,6 +700,7 @@ def ignore_comment_report(request, comment_id):
 def delete_review_report(request, review_id):
     user = request.user
     url = reverse("user:admin_comment")
+
     if user.is_staff:
         if remove_reports_review(review_id):
             review = Review.objects.get(pk=review_id)
@@ -666,6 +714,7 @@ def delete_review_report(request, review_id):
             send_moderate_notification_email(
                 request, target_user, restaurant, "review", "delete"
             )
+
         else:
             messages.error(
                 request, "Review ID could not be found: {}".format(review_id)
