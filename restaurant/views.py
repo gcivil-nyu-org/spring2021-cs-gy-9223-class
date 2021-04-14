@@ -93,12 +93,13 @@ def get_restaurant_profile(request, restaurant_id):
             )
         elif lastday_reviews_num_user >= 2:
             messages.error(request, "Sorry, you've made 2 reviews within last 24 hours")
+
         else:
             form = UserQuestionaireForm(request.POST, request.FILES, restaurant_id)
             # if form.is_valid():
             form.save()
             messages.success(request, "Thank you for your review!")
-
+            
         return HttpResponseRedirect(url)
 
     if request.method == "POST" and "employee_mask" in request.POST:
@@ -361,6 +362,7 @@ def delete_comment(request, restaurant_id, comment_id):
             messages.error(request, "You are not able to delete other users' comments!")
     else:
         messages.error(request, "Please first login before deleting any comment")
+
     return HttpResponseRedirect(reverse("restaurant:profile", args=[restaurant_id]))
 
 
