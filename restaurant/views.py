@@ -71,7 +71,6 @@ def get_restaurant_profile(request, restaurant_id):
             messages.error(request, "Please login before making review")
             return HttpResponseRedirect(url)
 
-
         # 24 hour limit for reviews on the same restaurant, 1 review at most
         lastday_reviews_num_rest = Review.objects.filter(
             user=request.user, restaurant_id=restaurant_id, time__gte=date_from
