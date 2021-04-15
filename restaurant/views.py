@@ -463,7 +463,6 @@ def delete_favorite_restaurant(request, business_id):
         return HttpResponse("Deleted")
 
 
-@login_required
 def like_review(request):
     if not request.user.is_authenticated:
         return HttpResponseForbidden()
