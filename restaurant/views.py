@@ -98,7 +98,6 @@ def get_restaurant_profile(request, restaurant_id):
             # if form.is_valid():
             form.save()
             messages.success(request, "Thank you for your review!")
-
         return HttpResponseRedirect(url)
 
     if request.method == "POST" and "employee_mask" in request.POST:
