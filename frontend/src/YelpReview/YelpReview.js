@@ -111,7 +111,6 @@ export default ({ review, restaurantId, userId, isInternal }) => {
             },
             body: `review_id=${Number(data.id)}`
         }).then(r => {
-            console.log(r.status);
             if (r.status === 403) {
                 setShowAlert(true);
                 setTimeout(() => setShowAlert(false), 2500);
@@ -138,7 +137,7 @@ export default ({ review, restaurantId, userId, isInternal }) => {
             <div className="yelp__body d-block d-sm-flex">
                 <div className="yelp__pic_date" style={{ opacity: data.hidden ? 0.5 : 1 }}>
                     <div className="text-center">
-                        <img src={data.profilePic || DEFAULT_AVATAR} className="yelp__pic p-2" style={{ cursor: 'pointer' }} onClick={() => window.open(`/user/facing_page/${userId}`, '_blank') }/>
+                        <img src={data.profilePic || DEFAULT_AVATAR} className="yelp__pic p-2" style={{ cursor: 'pointer' }} onClick={() => window.open(`/user/facing_page/${data.userId}`, '_blank') }/>
                     </div>
                     <div className="yelp__date text-muted text-sm">
                         {data.time}
@@ -146,7 +145,7 @@ export default ({ review, restaurantId, userId, isInternal }) => {
                 </div>
                 <div className = "yelp__name_rating_text text-muted" style={{ opacity: data.hidden ? 0.5 : 1 }}>
                     <div className="yelp__name">
-                        <a href={`/user/facing_page/${userId}`}>
+                        <a href={`/user/facing_page/${data.userId}`}>
                             {data.userName}
                         </a>
                     </div>
