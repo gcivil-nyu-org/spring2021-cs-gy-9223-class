@@ -319,11 +319,11 @@ def get_restaurant_profile(request, restaurant_id):
         )
 
 
-def edit_review(request, restaurant_id, review_id, action, source):
-    if action == "delete":
+def edit_review(request, restaurant_id, review_id, source):
+    if request.method == "DELETE":
         Review.objects.filter(id=review_id).delete()
         messages.success(request, "Your review is removed!")
-    if action == "put":
+    if request.method == "POST":
         data = request.POST
         files = request.FILES
 

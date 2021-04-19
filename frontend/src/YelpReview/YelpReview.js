@@ -95,13 +95,19 @@ export default ({ review, restaurantId, userId, isInternal }) => {
         const content = document.querySelector('textarea[name="content"]');
         content.value = data.content;
         content.dispatchEvent(new Event('change'));
-        document.forms['rating-form'].setAttribute('action', `/restaurant/profile/${restaurantId}/review/${data.id}/put/restaurant`);
+        document.forms['rating-form'].setAttribute('action', `/restaurant/profile/${restaurantId}/review/${data.id}/restaurant`);
     };
 
     const onDeleteClick = e => {
         e.preventDefault();
         setShowDropdown(false);
-        fetch(`/restaurant/profile/${restaurantId}/review/${data.id}/delete/restaurant`).then(res => {
+        fetch(`/restaurant/profile/${restaurantId}/review/${data.id}/restaurant`, { 
+            method: 'DELETE', 
+            credentials: 'include',
+            headers: {
+                'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]')?.value
+            }
+        }).then(res => {
             if (res.ok) {
                 location.reload();
             }
