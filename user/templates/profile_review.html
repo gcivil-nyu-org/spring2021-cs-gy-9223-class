@@ -473,12 +473,8 @@ $('#exampleModal').on('hidden.bs.modal', function (e) {
     this.dropdownWrapper = document.createElement('div');
     this.dropdownWrapper.setAttribute('class', 'dropdown-menu p-0');
 
-    this.deleteForm = document.createElement('form');
-    this.deleteForm.setAttribute('action', `/restaurant/profile/${this.getAttribute('restaurant-id')}/review/${this.getAttribute('review-id')}/user`);
-
     this.optionButtonWrapper.appendChild(this.optionButton);
     this.optionButtonWrapper.appendChild(this.dropdownWrapper);
-    this.optionButtonWrapper.appendChild(this.deleteForm);
     this.optionButtonWrapper.addEventListener('mouseover', () => {
       this.dropdownWrapper.classList.add('show');
     });
@@ -507,7 +503,20 @@ $('#exampleModal').on('hidden.bs.modal', function (e) {
           document.forms['rating-form'].setAttribute('action', `/restaurant/profile/${this.getAttribute('restaurant-id')}/review/${this.getAttribute('review-id')}/user`);
         });
       } else {
-        anchor.addEventListener('click', () => this.deleteForm.submit());
+        var url = `/restaurant/profile/${this.getAttribute('restaurant-id')}/review/${this.getAttribute('review-id')}/user`;
+        anchor.addEventListener('click', () => {
+          $.ajax({
+                  type: 'DELETE',
+                  url: url,
+                  data: {},
+                  headers: {
+                  'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]')?.value
+                  },
+                  success: function (result) {
+                    location.reload();
+                  }
+                });
+        });
       }
       this.dropdownWrapper.appendChild(anchor);
     });
