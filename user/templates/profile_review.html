@@ -474,7 +474,7 @@ $('#exampleModal').on('hidden.bs.modal', function (e) {
     this.dropdownWrapper.setAttribute('class', 'dropdown-menu p-0');
 
     this.deleteForm = document.createElement('form');
-    this.deleteForm.setAttribute('action', `/restaurant/profile/${this.getAttribute('restaurant-id')}/review/${this.getAttribute('review-id')}/delete/user`);
+    this.deleteForm.setAttribute('action', `/restaurant/profile/${this.getAttribute('restaurant-id')}/review/${this.getAttribute('review-id')}/user`);
 
     this.optionButtonWrapper.appendChild(this.optionButton);
     this.optionButtonWrapper.appendChild(this.dropdownWrapper);
@@ -504,7 +504,7 @@ $('#exampleModal').on('hidden.bs.modal', function (e) {
           const content = document.querySelector('textarea[name="content"]');
           content.value = this.getAttribute('review-text');
           content.dispatchEvent(new Event('change'));
-          document.forms['rating-form'].setAttribute('action', `/restaurant/profile/${this.getAttribute('restaurant-id')}/review/${this.getAttribute('review-id')}/put/user`);
+          document.forms['rating-form'].setAttribute('action', `/restaurant/profile/${this.getAttribute('restaurant-id')}/review/${this.getAttribute('review-id')}/user`);
         });
       } else {
         anchor.addEventListener('click', () => this.deleteForm.submit());
