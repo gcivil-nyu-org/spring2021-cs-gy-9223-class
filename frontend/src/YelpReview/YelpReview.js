@@ -77,7 +77,8 @@ export default ({ review, restaurantId, userId, isInternal }) => {
         var logged_in = (typeof userId === 'number' && userId !== 0)
         if (!logged_in) {
             window.confirm("Can't report a review without being logged in.");
-            window.location.href = "http://localhost:8000/user/login"
+            window.location.href = "http://localhost:8000/user/login";
+            return;
         }
         e.preventDefault();
         setShowDropdown(false);
