@@ -14,7 +14,11 @@ logger = logging.getLogger(__name__)
 def send_reset_password_email(request, email):
     user = get_user_model().objects.get(email=email)
     host_name = request.get_host()
-    base_url = "http://" + host_name + "/user/reset_password/"
+    base_url = host_name + "/user/reset_password/"
+    if str(host_name).startswith("127.0.0.1"):
+        base_url = "http://" + base_url
+    else:
+        base_url = "https://" + base_url
     c = {
         "base_url": base_url,
         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
@@ -70,7 +74,12 @@ def send_feedback_email(request, email, subject, message):
 
 def send_verification_secondary_email(request, email):
     host_name = request.get_host()
-    base_url = "http://" + host_name + "/user/email/verification/"
+    base_url = host_name + "/user/email/verification/"
+    if str(host_name).startswith("127.0.0.1"):
+        base_url = "http://" + base_url
+    else:
+        base_url = "https://" + base_url
+
     c = {
         "base_url": base_url,
         "uid": urlsafe_base64_encode(force_bytes(request.user.pk)),

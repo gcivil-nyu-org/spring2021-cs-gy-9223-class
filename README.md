@@ -1,7 +1,7 @@
 # DineLine
 **Main**
 
-[![Build Status](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class.svg?branch=main)](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class)
+[![gcivil-nyu-org](https://circleci.com/gh/gcivil-nyu-org/spring2021-cs-gy-9223-class/tree/main.svg?style=svg)](https://app.circleci.com/pipelines/github/gcivil-nyu-org/spring2021-cs-gy-9223-class?branch=main)
 [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/spring2021-cs-gy-9223-class/badge.svg?branch=main)](https://coveralls.io/github/gcivil-nyu-org/spring2021-cs-gy-9223-class?branch=main)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
@@ -9,12 +9,12 @@
 
 **Team-1**
 
-[![Build Status](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class.svg?branch=team-1)](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class)
+[![gcivil-nyu-org](https://circleci.com/gh/gcivil-nyu-org/spring2021-cs-gy-9223-class/tree/team-1.svg?style=svg)](https://app.circleci.com/pipelines/github/gcivil-nyu-org/spring2021-cs-gy-9223-class?branch=team-1)
 [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/spring2021-cs-gy-9223-class/badge.svg?branch=team-1)](https://coveralls.io/github/gcivil-nyu-org/spring2021-cs-gy-9223-class?branch=team-1)
 
 **Team-2**
 
-[![Build Status](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class.svg?branch=team-2)](https://travis-ci.com/gcivil-nyu-org/spring2021-cs-gy-9223-class)
+[![gcivil-nyu-org](https://circleci.com/gh/gcivil-nyu-org/spring2021-cs-gy-9223-class/tree/team-2.svg?style=svg)](https://app.circleci.com/pipelines/github/gcivil-nyu-org/spring2021-cs-gy-9223-class?branch=team-2)
 [![Coverage Status](https://coveralls.io/repos/github/gcivil-nyu-org/spring2021-cs-gy-9223-class/badge.svg?branch=team-2)](https://coveralls.io/github/gcivil-nyu-org/spring2021-cs-gy-9223-class?branch=team-2)
 
 
@@ -69,34 +69,16 @@ XXX_KEY="ABCDEFGHIJKLMNOPQRSTUVWXYZ"
 ~~~
 
 
-
-### 5) Migrations
-
-For the first time deployment, if there's an update on any model, a makemigrations is needed before migration operation. Make migrations using this command:
-
+### 5) Initialize Data
+For the first time deployment, to update the data model and initialize that database, use this command:
 ~~~shell
-python manage.py makemigrations
+bash release-tasks.sh
 ~~~
-
-If there's nothing changed on model, execute a migration to generate the underlying database.
-
-~~~:
-python manage.py migrate
-~~~
+All the commands that are run by this script can be viewed in release-tasks.sh
 
 
 
-### 6) Load initial data to database
-
-~~~shell
-python manage.py loaddata data.json
-~~~
-
-This process might take some time since the initial dataset is a little bit large.
-
-
-
-### 7) Create local superuser
+### 6) Create local superuser
 
 ~~~shell
 python manage.py createsuperuser
@@ -104,7 +86,7 @@ python manage.py createsuperuser
 
 
 
-### 8） Collect static files
+### 7） Collect static files
 
 ~~~shell
 python manage.py collectstatic
@@ -112,7 +94,7 @@ python manage.py collectstatic
 
 
 
-### 9) Run server
+### 8) Run server
 
 ~~~shell
 python manage.py runserver
