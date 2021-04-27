@@ -44,7 +44,7 @@ export default ({ text, userId, author, restaurantId, reviewId, profile, comment
       <div className="comment__container">
         <img className="comment__profile__pic" style={{opacity: hidden ? 0.5 : 1}} src={profile ? profile : DEFAULT_PROFILE_PIC} />
         <div className="text-muted text-sm text-truncate comment__text" style={{opacity: hidden ? 0.5 : 1}}>
-          <span className="d-inline-block text-truncate" style={{width: hidden ? '20%' : '100%'}}>{ text }</span>
+          <span className="d-inline-block" style={{width: hidden ? '20%' : '100%', overflowX: 'auto' }}>{ text }</span>
           { hidden ? 
             <em className="text-danger d-inline-block ml-1" style={{fontSize: '0.6rem', lineHeight: '0.8rem', verticalAlign: 'text-top'}}>
               This comment is only visible to you
