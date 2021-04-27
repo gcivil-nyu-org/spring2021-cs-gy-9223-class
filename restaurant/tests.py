@@ -731,7 +731,7 @@ class SearchFilterFormTests(BaseTest):
 
 
 class RestaurantViewTests(TestCase):
-    """ Test Restaurant Views """
+    """Test Restaurant Views"""
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -1212,7 +1212,7 @@ class RestaurantUtilsTests(TestCase):
 
 
 class IntegratedInspectionRestaurantsTests(TestCase):
-    """ Test Restaurant Views """
+    """Test Restaurant Views"""
 
     def test_valid_get_latest_inspections(self):
         restaurant = create_restaurant(
@@ -1284,7 +1284,7 @@ class IntegratedInspectionRestaurantsTests(TestCase):
 
 
 class GetFilteredRestaurantsTests(TestCase):
-    """ Test Filter Restaurants module"""
+    """Test Filter Restaurants module"""
 
     def test_get_filtered_restaurants(self):
         cat = Categories.objects.create(category="wine_bar", parent_category="bars")
@@ -1329,7 +1329,7 @@ class GetFilteredRestaurantsTests(TestCase):
 
 
 class RestaurantRecommendationsTest(TestCase):
-    """ Test Recommend Restaurants module"""
+    """Test Recommend Restaurants module"""
 
     def setUp(self):
         Categories.objects.create(category="chinese", parent_category="chinese")
@@ -1935,7 +1935,7 @@ class ReportTests(TestCase):
 
 
 class FAQTest(TestCase):
-    """ Test FAQ Model"""
+    """Test FAQ Model"""
 
     def setUp(self):
         self.faq1 = FAQ.objects.create(
@@ -1988,7 +1988,7 @@ class FAQTest(TestCase):
 
 
 class SortTest(TestCase):
-    """ Test Sort by rating/price/distance Feature """
+    """Test Sort by rating/price/distance Feature"""
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -2263,7 +2263,7 @@ class SortTest(TestCase):
 
 
 class AskCommunityTest(TestCase):
-    """ Test Restaurant Q&As Feature """
+    """Test Restaurant Q&As Feature"""
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -2470,7 +2470,7 @@ class AskCommunityTest(TestCase):
 
 
 class SimilarRestaurantsTest(TestCase):
-    """ Test Similar Restaurant Recommendation"""
+    """Test Similar Restaurant Recommendation"""
 
     def setUp(self):
         self.factory = RequestFactory()
@@ -2608,7 +2608,7 @@ class SimilarRestaurantsTest(TestCase):
 
 
 class RecentViewsRecommendationTest(TestCase):
-    """ Test provide recommended restaurant based on user recent views """
+    """Test provide recommended restaurant based on user recent views"""
 
     def setUp(self):
         self.factory = RequestFactory()
