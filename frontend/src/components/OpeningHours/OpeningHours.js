@@ -12,7 +12,7 @@ const OpeningHours = () => {
     return (
         <div>
             <div className="card border-0 shadow mb-5">
-                <div className="card-header bg-gray-100 py-4 border-0">
+                <div className="card-header py-4 border-0">
                     <div className="media align-items-center">
                         <div className="media-body">
                             <h4 className="mb-0">Opening Hours </h4> </div>
