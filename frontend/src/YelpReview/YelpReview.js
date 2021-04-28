@@ -109,6 +109,7 @@ export default ({ review, restaurantId, userId, isInternal }) => {
     const onDeleteClick = e => {
         e.preventDefault();
         setShowDropdown(false);
+        
         fetch(`/restaurant/profile/${restaurantId}/review/${data.id}/restaurant`, { 
             method: 'DELETE', 
             credentials: 'include',
@@ -116,8 +117,9 @@ export default ({ review, restaurantId, userId, isInternal }) => {
                 'X-CSRFToken': document.querySelector('input[name="csrfmiddlewaretoken"]')?.value
             }
         }).then(res => {
-            if (res.ok) {
-                location.reload();
+            if (res.ok) {                
+                location.reload();   
+                alert("Review has been Deleted");             
             }
         });
     };
