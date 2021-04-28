@@ -1436,20 +1436,36 @@ class ReviewTests(BaseTest):
         )
         self.temp_review.save()
 
+    def test_add_review_guest(self):
+        url = "/restaurant/profile/" + str(self.temp_restaurant.id) + "/"
+        form = {
+            "user_id": 0,
+            "rating": 5,
+            "rating_safety": 5,
+            "rating_entry": 5,
+            "rating_door": 5,
+            "rating_table": 5,
+            "rating_bathroom": 5,
+            "rating_path": 5,
+            "content": "test adding review",
+        }
+
+        response = self.c.post(url, form)
+        review_count = Review.objects.filter(restaurant=self.temp_restaurant).count()
+        self.assertRedirects(
+            response,
+            url,
+            status_code=302,
+            target_status_code=200,
+            fetch_redirect_response=True,
+        )
+        self.assertEqual(review_count, 1)
+
     def test_add_review(self):
         self.c.login(username="user1", password="test1234Reviews")
 
-        restaurant = create_restaurant(
-            restaurant_name="Gary Danko",
-            business_address="800 N Point St",
-            yelp_detail=None,
-            postcode="94109",
-            business_id="WavvLdfdP6g8aZTtbBQHTx",
-        )
-        create_review(self.user1, restaurant, "test adding review", 5)
-
         # test adding review for the same restaurant within 24 hours
-        url1 = "/restaurant/profile/" + str(self.temp_restaurant.id) + "/"
+        url0 = "/restaurant/profile/" + str(self.temp_restaurant.id) + "/"
         form = {
             "user_id": str(self.user1.id),
             "rating": 5,
@@ -1462,19 +1478,63 @@ class ReviewTests(BaseTest):
             "content": "test adding review",
         }
 
-        response1 = self.c.post(url1, form)
-        review_count_1 = Review.objects.filter(
+        response0 = self.c.post(url0, form)
+        review_count_0 = Review.objects.filter(
             user=self.user1, restaurant=self.temp_restaurant
         ).count()
-        self.assertEqual(response1.status_code, 302)
-        self.assertEqual(review_count_1, 1)
+        self.assertEqual(response0.status_code, 302)
+        self.assertRedirects(
+            response0,
+            url0,
+            status_code=302,
+            target_status_code=200,
+            fetch_redirect_response=True,
+        )
+        self.assertEqual(review_count_0, 1)
 
         # test adding review for 2 or more different restaurants within 24 hours
-        url2 = "/restaurant/profile/" + str(restaurant.id) + "/"
+        restaurant = create_restaurant(
+            restaurant_name="Gary Danko",
+            business_address="800 N Point St",
+            yelp_detail=None,
+            postcode="94109",
+            business_id="WavvLdfdP6g8aZTtbBQHTx",
+        )
 
+        # test user-1 has made 2 reviews within 24 hours
+        create_review(self.user1, restaurant, "test adding review", 5)
+        restaurant_2 = create_restaurant(
+            restaurant_name="The Edge Harlem",
+            business_address="101 Edgecombe Avenue",
+            yelp_detail=None,
+            postcode="10030",
+            business_id="ej_pg-wc-ZtexQKPPiQ_5w",
+        )
+        url1 = "/restaurant/profile/" + str(restaurant.id) + "/"
+
+        response1 = self.c.post(url1, form)
+        review_count_1 = Review.objects.filter(user=self.user1).count()
+        self.assertEqual(response1.status_code, 302)
+        self.assertRedirects(
+            response1,
+            url1,
+            status_code=302,
+            target_status_code=200,
+            fetch_redirect_response=True,
+        )
+        self.assertEqual(review_count_1, 2)
+
+        url2 = "/restaurant/profile/" + str(restaurant_2.id) + "/"
         response2 = self.c.post(url2, form)
         review_count_2 = Review.objects.filter(user=self.user1).count()
         self.assertEqual(response2.status_code, 302)
+        self.assertRedirects(
+            response2,
+            url2,
+            status_code=302,
+            target_status_code=200,
+            fetch_redirect_response=True,
+        )
         self.assertEqual(review_count_2, 2)
 
         self.c.logout()
