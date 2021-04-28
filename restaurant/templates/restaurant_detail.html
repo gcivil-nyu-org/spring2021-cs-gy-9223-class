@@ -16,7 +16,48 @@
   }
 
 </script>
+<style>
+  .restaurant-card-style {
+    color:rgba(0, 0, 0, 0.19);
+  }
+</style>
+<script>
+  function initLuminanceMode(){
+      let current_luminance = sessionStorage.getItem("current_mode");
+      let local_luminance = localStorage.getItem("current_mode");
+      if (current_luminance == "dark" && local_luminance == "dark"){
+          darkMode();
+          document.getElementById("myCheckbox").checked = true;
+      }
+      if (current_luminance == "light" && local_luminance == "light"){
+          lightMode();
+          document.getElementById("myCheckbox").checked = false;
+      }
+  }
 
+  function lightMode() {
+      $('body').removeClass('dark-mode');
+      $('section').removeClass('dark-mode');
+      $('.collapsible').removeClass('dark-mode');
+      $('.content').removeClass('dark-mode');
+      $('.message').removeClass('dark-mode');
+      $('.modal-header').removeClass('dark-mode');
+      $('.modal-body').removeClass('dark-mode');
+      $('.modal-footer').removeClass('dark-mode');
+      $('.list-group-item').removeClass('dark-mode');
+  }
+  function darkMode() {
+      $('body').addClass('dark-mode');
+      $('section').addClass('dark-mode');
+      $('.collapsible').addClass('dark-mode');
+      $('.content').addClass('dark-mode');
+      $('.message').addClass('dark-mode');
+      $('.modal-header').addClass('dark-mode');
+      $('.modal-body').addClass('dark-mode');
+      $('.modal-footer').addClass('dark-mode');
+      $('.list-group-item').addClass('dark-mode');
+  }
+</script>
 <section class="pt-7 pb-5 d-flex align-items-end dark-overlay bg-cover" id="res_img">
   <div class="container overlay-content">
     <div class="d-flex justify-content-between align-items-start flex-column flex-lg-row align-items-lg-end">
@@ -848,32 +889,15 @@
       
       <div class="col-lg-4">
         <div class="pl-xl-4">
+          <!-- Opening Hours -->
           <div id="sidebar"></div>
-          <!-- Opening Hours      -->
-          <div class="card border-0 shadow mb-5">
-            <div class="card-header py-4 border-0">
-              <div class="media align-items-center">
-                <div class="media-body">
-<!--                  <p class="subtitle text-sm text-primary">Overnight Status : <span id="res_overnight_status"></span></p>-->
-                  <h4 class="mb-0">Opening Hours </h4> </div>
-                <svg class="svg-icon svg-icon svg-icon-light w-3rem h-3rem ml-3 text-muted">
-                  <use xlink:href="#wall-clock-1"> </use>
-                </svg>
-              </div>
-            </div>
-            <div class="card-body">
-              <table id="res_open_hours" class="table text-sm mb-0">
-
-              </table>
-            </div>
-          </div>
           <!-- Contact-->
           <div class="card border-0 shadow mb-5">
             <div class="card-header py-4 border-0">
               <div class="media align-items-center">
                 <div class="media-body">
                   <p class="subtitle text-sm text-primary">Want to know more?</p>
-                  <h4 class="mb-0">Information</h4>
+                  <h4 class="mb-0" style="color: black;">Information</h4>
                 </div>
                 <svg class="svg-icon svg-icon svg-icon-light w-3rem h-3rem ml-3 text-muted">
                   <use xlink:href="#fountain-pen-1"> </use>

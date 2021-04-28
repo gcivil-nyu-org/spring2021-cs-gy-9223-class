@@ -289,7 +289,6 @@ $(document).ready(function(){
 
                                         // Displaying map onto the page
                                         initMap(map);
-                                        initLuminanceMode();
 
                                     },
                                     error : function(xhr,errmsg,err) {
@@ -303,6 +302,8 @@ $(document).ready(function(){
                                     center: { lat: 40.7128, lng: -74.0060},
                                     zoom: 12,
                                 });
+
+                                initLuminanceMode();
                                 
                                 function addMarker(coords, restaurantName, restaurantId) {
                                     var marker = new google.maps.Marker({
@@ -364,7 +365,7 @@ $(document).ready(function(){
                                         }
 
                                         // Resdisplaying map with all the fetched data
-                                        initMap(map)
+                                        initMap(map);
 
                                     },
                                     error : function(xhr,errmsg,err) {
@@ -519,7 +520,7 @@ $(document).ready(function(){
                 <hr></hr>
             </div>
 
-                <div class="row-box">
+                <div class="row-box"> 
                     <div class="column-box">
                         <div class="hundred-width">
                             <center>
