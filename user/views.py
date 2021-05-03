@@ -189,12 +189,24 @@ def user_facing(request, user_id):
     for pref in user_pref_list:
         pref_dic = model_to_dict(pref)
         user_pref_list_json.append(pref_dic)
+    category_pref = user.preferences.filter(preference_type="category")
+    neighbourhood_pref = user.preferences.filter(preference_type="neighbourhood")
+    rating_pref = user.preferences.filter(preference_type="rating")
+    compliance_pref = user.preferences.filter(preference_type="compliance")
+    price_pref = user.preferences.filter(preference_type="price")
+    user_pref = [
+        category_pref,
+        neighbourhood_pref,
+        rating_pref,
+        compliance_pref,
+        price_pref,
+    ]
     return render(
         request=request,
         template_name="facing_page.html",
         context={
             "favorite_restaurant_list": favorite_restaurant_list,
-            "user_pref": user_pref_list,
+            "user_pref": user_pref,
             "user_pref_json": json.dumps(user_pref_list_json, cls=DjangoJSONEncoder),
             "user_profile": user_profile,
             "profile_pic": "" if user_profile is None else user_profile.photo,

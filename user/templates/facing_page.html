@@ -135,7 +135,7 @@ zoomModal.style.display = "none";
                           <div class="mt-3">
                             <h4>{{facing_page_user_id}}</h4>
                             <div class="text-muted font-size-sm" id = "test2">
-                                {{user_profile.state}}
+                              Unknown
                             </div>
                           </div>
                         </div>
@@ -172,18 +172,21 @@ zoomModal.style.display = "none";
         
           <div class="tab-content tab-space">
             <div class="tab-pane active text-center gallery" id="studio">
-              <div class="row pt-4">
-                  {% for pref in user_pref %}
-                  {% csrf_token %}
-                  <ul class="list-group">
-                    <li id="{{ pref.category }}" class="list-group-item">
-                        <div class="text-secondary">{{ pref.category }} 
-                            
-                        </div>
-                    </li>
-                  </ul>
-                  {% endfor %}  
-  				</div>
+            <div class="row pt-4" style = "transform:translate(30%,0);">
+              {% for type in user_pref %}
+              {% for pref in type %} {% csrf_token %}
+              <ul class="list-group">
+                <li id="{{ pref.value }}" class="list-group-item">
+                    <form name="saved_pref_delete" class="saved_res_remove" onsubmit="return false;" preference_type="{{ pref.preference_type }}" value="{{ pref.value }}" method="POST">
+                    <div class="text-secondary">
+                        {{ pref.display_value }}
+                    </div>
+                  </form>
+                </li>
+              </ul>
+              {% endfor %}
+              {% endfor %}
+            </div>
         </div>
 
             <div class="tab-pane text-center gallery" id="works">
@@ -469,7 +472,7 @@ zoomModal.style.display = "none";
                 </div>
   			</div>
             <div class="tab-pane text-center gallery" id="favorite">
-                <div class="row pt-4">
+                <div class="row pt-4" style = "transform:translate(30%,0);">
                     {% for restaurant in favorite_restaurant_list %}
                     {% csrf_token %}
                     <ul class="list-group">
@@ -514,6 +517,40 @@ zoomModal.style.display = "none";
     });
   });
 </script>
+<script>
+  window.onload = function () {
+    initLuminanceMode();
+
+    y = document.getElementById('test2');
+
+    var testString = '';
+    var addressList = new Array();
+    var newList = new Array();
+
+    addressList[0] = '{{user_profile.city}}';
+    addressList[1] = '{{user_profile.state}}';
+    console.log(addressList);
+
+    for (var i = 0; i < addressList.length; i++) {
+      //console.log(typeof(addressList[i]))
+      if (addressList[i] != '') {
+        newList.push(addressList[i]);
+      }
+    }
+    //console.log(newList)
+    for (var i = 0; i < newList.length; i++) {
+      if (i == newList.length - 1) {
+        testString = testString + newList[i];
+      }
+      else {
+        testString = testString + newList[i] + ', '
+      }
+    }
+    y.innerHTML = testString;
+
+    $("#state option[value='{{user_profile.state}}']").prop("selected", true);
+  }
+  </script>
 </section>
 
 
